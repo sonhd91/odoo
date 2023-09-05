@@ -88,8 +88,8 @@ class StockPicking(models.Model):
         for move in self.move_ids:
             sale_order = move.picking_id.sale_id
             # Creates new SO line only when pickings linked to a sale order and
-            # for moves with qty. done and not already linked to a SO line.
-            if not sale_order or move.location_dest_id.usage != 'customer' or move.sale_line_id or not move.quantity_done:
+            # for moves with qty. done and not already linked to a SO line or PO line.
+            if not sale_order or move.location_dest_id.usage != 'customer' or move.sale_line_id or not move.quantity_done or (move.picking_type_id.code == 'outgoing' and move.purchase_line_id):
                 continue
             product = move.product_id
             so_line_vals = {
